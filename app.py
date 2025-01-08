@@ -3,5 +3,5 @@ from flask import Flask
 app = Flask(__name__)
 
 @app.route('/')
-def home():
+def index():
     return 'Welcome to the Flask API!'
