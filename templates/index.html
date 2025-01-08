@@ -31,18 +31,15 @@
 
     <!-- Script para manejar el formulario con jQuery -->
     <script>
-        // $(document).ready(function() {
-        //     $('#searchForm').on('submit', function(event) {
-        //         event.preventDefault(); // Evitar recargar la página
+        $(() => {
+            $('#searchForm').on('submit', function(event) {
+                event.preventDefault(); // Evitar recargar la página
 
-        //         const query = $('#searchInput').val();
-        //         const resultsContainer = $('#results');
-
-        //         // Simular resultados de búsqueda (puedes reemplazar esto con una petición real)
-        //         resultsContainer.html(`<p>Resultados para: <strong>${query}</strong></p>`);
-        //     });
-        // });
-        $(()=>{alert("Hola!");});
+                const query = $('#searchInput').val();
+                console.log(query);
+                
+            });
+        });
         </script>
 </body>
 </html>
