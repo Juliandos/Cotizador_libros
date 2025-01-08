@@ -50,30 +50,36 @@ def buscar_libre_libreria(driver, titulo):
     if no_encontrado:
         return []
 
+    # Buscar los elementos span que tengan la clase "pagnLink"
+    paginas = driver.find_elements(By.CSS_SELECTOR, 'span.pagnLink')
+
     # Encuentre todos los div con la clase CSS "div.box-producto"
-    divs = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
+    libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
 
     libros = []
 
-    for div in divs:
-        # Extraer el valor del atributo "src" de la primera etiqueta img y clase " lazyloaded"
-        img_url = div.find_element(By.TAG_NAME, 'img').get_attribute('src')
-        # Extraer el valor de este selector CSS "h3.nombre"
-        titulo_libro = div.find_element(By.CSS_SELECTOR, 'h3.nombre').text
-        # Extraer el valor de este selector "div.autor"
-        autor_libro = div.find_element(By.CSS_SELECTOR, 'div.autor').text
-        # # Extraer el valor del div con clases "autor color-dark-grey metas hide-on-hover"
-        otros_datos = div.find_element(By.CSS_SELECTOR, 'div.autor.color-dark-gray.metas.hide-on-hover').text
-        # # Extraer el valor del elemento p con clases "precio-ahora hide-on-hover margin-0 font-size-medium"
-        precio = div.find_element(By.CSS_SELECTOR, 'p.precio-ahora.hide-on-hover.margin-0.font-size-medium').text
-
-
-        libros.append({
-            'img_url': img_url,
-            'titulo': titulo_libro,
-            'autor': autor_libro,
-            'otros_datos': otros_datos,
-            'precio': precio,
-        })
+    for libro in libros_encontrados:
+        libros.append(extraerDatosLibros(libro))
 
     return libros
+
+def extraerDatosLibros(libro):
+    # Extraer el valor del atributo "src" de la primera etiqueta img y clase " lazyloaded"
+    img_url = libro.find_element(By.TAG_NAME, 'img').get_attribute('src')
+    # Extraer el valor de este selector CSS "h3.nombre"
+    titulo_libro = libro.find_element(By.CSS_SELECTOR, 'h3.nombre').text
+    # Extraer el valor de este selector "div.autor"
+    autor_libro = libro.find_element(By.CSS_SELECTOR, 'div.autor').text
+    # # Extraer el valor del div con clases "autor color-dark-grey metas hide-on-hover"
+    otros_datos = libro.find_element(By.CSS_SELECTOR, 'div.autor.color-dark-gray.metas.hide-on-hover').text
+    # # Extraer el valor del elemento p con clases "precio-ahora hide-on-hover margin-0 font-size-medium"
+    precio = libro.find_element(By.CSS_SELECTOR, 'p.precio-ahora.hide-on-hover.margin-0.font-size-medium').text
+
+
+    return{
+        'img_url': img_url,
+        'titulo': titulo_libro,
+        'autor': autor_libro,
+        'otros_datos': otros_datos,
+        'precio': precio,
+    }
