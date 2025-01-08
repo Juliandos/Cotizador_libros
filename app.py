@@ -1,4 +1,7 @@
 from flask import Flask, jsonify, render_template, request
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
 
 app = Flask(__name__)
 
@@ -15,3 +18,9 @@ def buscar():
         'title': title
     }
     return jsonify(datos)
+
+# funciones que se usarán en las rutas
+
+def crear_driver():
+    chrome_options = webdriver.ChromeOptions()
+    return chrome_options
