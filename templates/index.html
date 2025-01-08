@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cotizador de libros</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
+
 <body>
     <div class="container my-5">
         <!-- Título de la página -->
@@ -16,7 +18,7 @@
 
         <!-- Formulario -->
         <form id="searchForm" class="d-flex mb-4">
-            <input type="text" class="form-control me-2" id="searchInput" placeholder="Ingresa tu búsqueda" required>
+            <input type="text" class="form-control me-2" id="searchInput" placeholder="Ingresa tu búsqueda" required />
             <button type="submit" class="btn btn-primary">Buscar</button>
         </form>
 
@@ -32,14 +34,25 @@
     <!-- Script para manejar el formulario con jQuery -->
     <script>
         $(() => {
-            $('#searchForm').on('submit', function(event) {
+            $("#searchForm").on("submit", function (event) {
                 event.preventDefault(); // Evitar recargar la página
 
-                const query = $('#searchInput').val();
+                const query = $("#searchInput").val();
                 console.log(query);
-                
+
+                // Realizar una petición POST con jQuery
+                $.post(
+                    "/buscar",
+                    { title: query },
+                    function (response) {
+                        console.log("Respuesta del servidor:", response);
+                    }
+                ).fail(function (error) {
+                    console.error("Error en la petición:", error);
+                });
             });
         });
-        </script>
+    </script>
 </body>
+
 </html>
