@@ -123,6 +123,8 @@
           { title: query },
           (response) => {
             let librosBuscaLibre = response.buscaLibre
+            console.log(response);
+            
             if (librosBuscaLibre.length > 0) {
               for(const libro of librosBuscaLibre){
                 const libroHtml = generarTarjetaLib(libro);

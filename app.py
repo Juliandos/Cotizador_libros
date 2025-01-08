@@ -43,15 +43,12 @@ def buscar_libre_libreria(driver, titulo):
     input_busqueda.send_keys(titulo)
     input_busqueda.send_keys(Keys.ENTER)
 
-    time.sleep(3)
+    time.sleep(4)
 
     # Validar si el section con el ID "noEncontrado" existe
-    no_encontrado = driver.find_element(By.ID, 'noEncontrado')
-    if no_encontrado:
-        return []
-
-    # Buscar los elementos span que tengan la clase "pagnLink"
-    paginas = driver.find_elements(By.CSS_SELECTOR, 'span.pagnLink')
+    # no_encontrado = driver.find_element(By.ID, 'noEncontrado')
+    # if no_encontrado:
+    #     return []
 
     # Encuentre todos los div con la clase CSS "div.box-producto"
     libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
@@ -60,6 +57,20 @@ def buscar_libre_libreria(driver, titulo):
 
     for libro in libros_encontrados:
         libros.append(extraerDatosLibros(libro))
+    
+    # Buscar los elementos span que tengan la clase "pagnLink"
+    paginas = driver.find_elements(By.CSS_SELECTOR, 'span.pagnLink')
+    
+    if len(paginas):
+        for i, p in enumerate(paginas):
+            titulo_modificado = titulo.replace(' ', '+').lower()
+            url = f"https://www.buscalibre.com.co/libros/search?q={titulo_modificado}&page={i + 2}"
+            driver.get(url)
+            time.sleep(3)
+
+            libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
+            for libro in libros_encontrados:
+                libros.append(extraerDatosLibros(libro))
 
     return libros
 
@@ -73,7 +84,10 @@ def extraerDatosLibros(libro):
     # # Extraer el valor del div con clases "autor color-dark-grey metas hide-on-hover"
     otros_datos = libro.find_element(By.CSS_SELECTOR, 'div.autor.color-dark-gray.metas.hide-on-hover').text
     # # Extraer el valor del elemento p con clases "precio-ahora hide-on-hover margin-0 font-size-medium"
-    precio = libro.find_element(By.CSS_SELECTOR, 'p.precio-ahora.hide-on-hover.margin-0.font-size-medium').text
+    try:
+        precio = libro.find_element(By.CSS_SELECTOR, 'p.precio-ahora.hide-on-hover.margin-0.font-size-medium').text
+    except:
+        precio = -1
 
 
     return{
