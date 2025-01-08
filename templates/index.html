@@ -151,7 +151,9 @@
           (response) => {
             let librosBuscaLibre = response.buscaLibre
             if (librosBuscaLibre.length > 0) {
-              
+              for(const libro of librosBuscaLibre){
+                const libroHtml = generarTarjetaLib(libro);
+              }
             }
           }
         ).fail(function (error) {
@@ -159,6 +161,21 @@
         });
       });
     });
+
+    function generarTarjetaLib(libro) {
+      const tarjetaHtml = `
+        <div class="col">
+          <div class="card">
+            <img src="${libro.imagen}" class="card-img-top" alt="...">
+            <div class="card-body">
+              <h5 class="card-title">${libro.titulo}</h5>
+              <p class="card-text">${libro.descripcion}</p>
+            </div>
+          </div>
+        </div>
+      `;
+      $("#buscaLibre").append(tarjetaHtml);
+    }
   </script>
 </body>
 
