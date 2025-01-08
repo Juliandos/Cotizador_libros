@@ -38,13 +38,12 @@
                 event.preventDefault(); // Evitar recargar la página
 
                 const query = $("#searchInput").val();
-                console.log(query);
 
                 // Realizar una petición POST con jQuery
                 $.post(
                     "/buscar",
                     { title: query },
-                    function (response) {
+                    (response) => {
                         console.log("Respuesta del servidor:", response);
                     }
                 ).fail(function (error) {
