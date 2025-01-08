@@ -20,7 +20,7 @@ def buscar():
     datos = {
         'status': 'success',
         'titulo': title,
-        'datos_libro': buscar_libre_libreria(driver, title)
+        'buscaLibre': buscar_libre_libreria(driver, title)
     }
     return jsonify(datos)
 
