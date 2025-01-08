@@ -35,35 +35,8 @@
         </ul>
         <div class="tab-content mt-4" id="myTabContent">
           <!-- Pestaña 1 -->
-          <div class="tab-pane fade show active" id="buscaLibre" role="tabpanel" aria-labelledby="tab1-tab">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-              <div class="col">
-                <div class="card">
-                  <img src="https://via.placeholder.com/150" class="card-img-top" alt="...">
-                  <div class="card-body">
-                    <h5 class="card-title">Tarjeta 1</h5>
-                    <p class="card-text">Contenido de la tarjeta 1.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card">
-                  <img src="https://via.placeholder.com/150" class="card-img-top" alt="...">
-                  <div class="card-body">
-                    <h5 class="card-title">Tarjeta 2</h5>
-                    <p class="card-text">Contenido de la tarjeta 2.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card">
-                  <img src="https://via.placeholder.com/150" class="card-img-top" alt="...">
-                  <div class="card-body">
-                    <h5 class="card-title">Tarjeta 3</h5>
-                    <p class="card-text">Contenido de la tarjeta 3.</p>
-                  </div>
-                </div>
-              </div>
+          <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="tab1-tab">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 container-fluid" id="buscaLibre">
             </div>
           </div>
           <!-- Pestaña 2 -->
@@ -154,6 +127,8 @@
               for(const libro of librosBuscaLibre){
                 const libroHtml = generarTarjetaLib(libro);
               }
+            }else{
+              
             }
           }
         ).fail(function (error) {
@@ -164,18 +139,21 @@
 
     function generarTarjetaLib(libro) {
       const tarjetaHtml = `
-        <div class="col">
-          <div class="card">
-            <img src="${libro.imagen}" class="card-img-top" alt="...">
+        <div class="col-sm-12 col-md-6 col-lg-4">
+          <div class="card h-100">
+            <img src="${libro.img_url}" class="card-img-top img-fluid" alt="${libro.titulo}" style="max-height: 200px; object-fit: cover;">
             <div class="card-body">
               <h5 class="card-title">${libro.titulo}</h5>
-              <p class="card-text">${libro.descripcion}</p>
+              <p class="card-text"><strong>Autor:</strong> ${libro.autor}</p>
+              <p class="card-text">${libro.otros_datos}</p>
+              <p class="card-text text-success"><strong>Precio:</strong> ${libro.precio}</p>
             </div>
           </div>
         </div>
       `;
       $("#buscaLibre").append(tarjetaHtml);
     }
+
   </script>
 </body>
 

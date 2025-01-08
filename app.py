@@ -43,7 +43,12 @@ def buscar_libre_libreria(driver, titulo):
     input_busqueda.send_keys(titulo)
     input_busqueda.send_keys(Keys.ENTER)
 
-    time.sleep(5)
+    time.sleep(3)
+
+    # Validar si el section con el ID "noEncontrado" existe
+    no_encontrado = driver.find_element(By.ID, 'noEncontrado')
+    if no_encontrado:
+        return []
 
     # Encuentre todos los div con la clase CSS "div.box-producto"
     divs = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
