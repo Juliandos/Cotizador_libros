@@ -121,7 +121,7 @@
         $("#divBuscaNacional").LoadingOverlay("show");
 
         $.post("/buscarNacional", { title: query }, (response) => {
-          // console.log(response);
+          console.log(response);
           
           let librosBuscaNacional = response.buscaNacional;
           $("#divBuscaNacional").LoadingOverlay("hide");

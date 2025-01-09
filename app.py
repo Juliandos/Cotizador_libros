@@ -55,32 +55,25 @@ def buscar_nacional_libreria(driver, titulo):
     input_busqueda.send_keys(Keys.ENTER)
 
     time.sleep(3)
-
-    # Encuentre todos los section con clase "vtex-product-summary-2-x-container vtex-product-summary-2-x-container--cardsLibros vtex-product-summary-2-x-containerNormal vtex-product-summary-2-x-containerNormal--cardsLibros overflow-hidden br3 h-100 w-100 flex flex-column justify-between center tc"
-    libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'section.vtex-product-summary-2-x-container.vtex-product-summary-2-x-container--cardsLibros.vtex-product-summary-2-x-containerNormal.vtex-product-summary-2-x-containerNormal--cardsLibros.overflow-hidden.br3.h-100.w-100.flex.flex-column.justify-between.center.tc')
-
+    
     libros = []
+    # Ciclo while para verificar continuamente la presencia del botón
+    while True:
+        try:
+            # Intentar encontrar el botón 'Mostrar más'
+            mostrar_mas = driver.find_element(By.CSS_SELECTOR, "a.vtex-button[rel='next']")
+            mostrar_mas.click()
+            time.sleep(3)
+        except:
+            time.sleep(1)
+            libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'section.vtex-product-summary-2-x-container.vtex-product-summary-2-x-container--cardsLibros.vtex-product-summary-2-x-containerNormal.vtex-product-summary-2-x-containerNormal--cardsLibros.overflow-hidden.br3.h-100.w-100.flex.flex-column.justify-between.center.tc')
+            print("cantidad: ", len(libros_encontrados))
 
-    for libro in libros_encontrados:
-        libros.append(extraerDatosNacional(libro))
-    
+            for libro in libros_encontrados:
+                libros.append(extraerDatosNacional(libro))
+            break 
+
     return libros
-    
-    # # Buscar los elementos span que tengan la clase "pagnLink"
-    # paginas = driver.find_elements(By.CSS_SELECTOR, 'span.pagnLink')
-    
-    # if len(paginas):
-    #     for i, p in enumerate(paginas):
-    #         titulo_modificado = titulo.replace(' ', '+').lower()
-    #         url = f"https://www.buscalibre.com.co/libros/search?q={titulo_modificado}&page={i + 2}"
-    #         driver.get(url)
-    #         time.sleep(2)
-
-    #         libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
-    #         for libro in libros_encontrados:
-    #             libros.append(extraerDatosLibre(libro))
-
-    # return libros
 
 def buscar_libre_libreria(driver, titulo):
     driver.get('https://www.buscalibre.com.co/')
@@ -168,7 +161,6 @@ def extraerDatosNacional(libro):
         # Verificar si el espacio está vacío y reemplazarlo por "00"
         if currency_literal.strip() == "":
             currency_literal = "00"
-        print(currency_literal)
         # Componer el precio completo
         precio = f"{currency_code}{currency_integer}{currency_group}{currency_literal}"
     except:
