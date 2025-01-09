@@ -91,7 +91,7 @@ def extraerDatosLibros(libro):
 
 
     return{
-        'img_url': img_url,
+        'img_url': img_url if img_url else 'https://statics.cdn1.buscalibre.com/no_image/ni9.__RS180x180__.jpg',
         'titulo': titulo_libro,
         'autor': autor_libro,
         'otros_datos': otros_datos,
