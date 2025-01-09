@@ -30,8 +30,8 @@
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#tab2" type="button" role="tab"
-              aria-controls="tab2" aria-selected="false">
+            <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#buscaNacional" type="button" role="tab"
+              aria-controls="buscaNacional" aria-selected="false">
               Pestaña 2
             </button>
           </li>
@@ -45,39 +45,12 @@
         <div class="tab-content mt-4" id="myTabContent">
           <!-- Pestaña 1 -->
           <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="tab1-tab" id="buscaLibre">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 container-fluid" id="buscaLibreMos"
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 container-fluid" id="divBuscaLibre"
               style="height: 300px"></div>
           </div>
           <!-- Pestaña 2 -->
-          <div class="tab-pane fade" id="tab2" role="tabpanel" aria-labelledby="tab2-tab">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="height: 300px">
-              <div class="col">
-                <div class="card">
-                  <img src="https://via.placeholder.com/150" class="card-img-top" alt="..." />
-                  <div class="card-body">
-                    <h5 class="card-title">Tarjeta 4</h5>
-                    <p class="card-text">Contenido de la tarjeta 4.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card">
-                  <img src="https://via.placeholder.com/150" class="card-img-top" alt="..." />
-                  <div class="card-body">
-                    <h5 class="card-title">Tarjeta 5</h5>
-                    <p class="card-text">Contenido de la tarjeta 5.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card">
-                  <img src="https://via.placeholder.com/150" class="card-img-top" alt="..." />
-                  <div class="card-body">
-                    <h5 class="card-title">Tarjeta 6</h5>
-                    <p class="card-text">Contenido de la tarjeta 6.</p>
-                  </div>
-                </div>
-              </div>
+          <div class="tab-pane fade" role="tabpanel" aria-labelledby="tab2-tab" id="buscaNacional">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" id="divBuscaNacional" style="height: 300px">
             </div>
           </div>
           <!-- Pestaña 3 -->
@@ -128,35 +101,37 @@
 
         const query = $("#searchInput").val();
 
-        // $("#buscaLibreMos").LoadingOverlay("show");
+        // $("#divBuscaLibre").LoadingOverlay("show");
 
         // // Realizar una petición POST con jQuery
         // $.post("/buscarLibre", { title: query }, (response) => {
         //   let librosBuscaLibre = response.buscaLibre;
-        //   $("#buscaLibreMos").LoadingOverlay("hide");
+        //   $("#divBuscaLibre").LoadingOverlay("hide");
 
         //   if (librosBuscaLibre.length > 0) {
         //     for (const libro of librosBuscaLibre) {
         //       const libroHtml = generarTarjetaLib(libro);
-        //       $("#buscaLibreMos").append(libroHtml);
+        //       $("#divBuscaLibre").append(libroHtml);
         //     }
         //   }
         // }).fail(function (error) {
         //   console.error("Error en la petición:", error);
         // });
 
-        $.post("/buscarNacional", { title: query }, (response) => {
-          console.log(response);
-          
-          // let librosBuscaLibre = response.buscaLibre;
-          // $("#buscaLibreMos").LoadingOverlay("hide");
+        $("#divBuscaNacional").LoadingOverlay("show");
 
-          // if (librosBuscaLibre.length > 0) {
-          //   for (const libro of librosBuscaLibre) {
-          //     const libroHtml = generarTarjetaLib(libro);
-          //     $("#buscaLibreMos").append(libroHtml);
-          //   }
-          // }
+        $.post("/buscarNacional", { title: query }, (response) => {
+          // console.log(response);
+          
+          let librosBuscaNacional = response.buscaNacional;
+          $("#divBuscaNacional").LoadingOverlay("hide");
+
+          if (librosBuscaNacional.length > 0) {
+            for (const libro of librosBuscaNacional) {
+              const libroHtml = generarTarjetaLib(libro);
+              $("#divBuscaNacional").append(libroHtml);
+            }
+          }
         }).fail(function (error) {
           console.error("Error en la petición:", error);
         });
