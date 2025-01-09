@@ -12,8 +12,8 @@ def index():
 
 # Ruta post pra generar una busqueda a partir de un titulo que se envia desde el cliente
 
-@app.route('/buscar', methods=['POST'])
-def buscar():
+@app.route('/buscarLibre', methods=['POST'])
+def buscarLibre():
     title = request.form.get('title')
 
     driver = crear_driver()
@@ -21,6 +21,18 @@ def buscar():
         'status': 'success',
         'titulo': title,
         'buscaLibre': buscar_libre_libreria(driver, title)
+    }
+    return jsonify(datos)
+
+@app.route('/buscarNacional', methods=['POST'])
+def buscarNacional():
+    title = request.form.get('title')
+
+    driver = crear_driver()
+    datos = {
+        'status': 'success',
+        'titulo': title,
+        'buscaNacional': buscar_nacional_libreria(driver, title)
     }
     return jsonify(datos)
 
@@ -34,6 +46,45 @@ def crear_driver():
     driver = webdriver.Chrome(options=chrome_options)
     return driver
 
+def buscar_nacional_libreria(driver, titulo):
+    driver.get('https://www.librerianacional.com/')
+
+    # Encuentre el input con el placeholder "Busca títulos, autores, categorías..." y escriba el titulo
+    input_busqueda = driver.find_element(By.CSS_SELECTOR, 'input[placeholder="Busca títulos, autores, categorías..."]')
+    input_busqueda.send_keys(titulo)
+    input_busqueda.send_keys(Keys.ENTER)
+
+    time.sleep(4)
+
+    # # Validar si el section con el ID "noEncontrado" existe
+    # # no_encontrado = driver.find_element(By.ID, 'noEncontrado')
+    # # if no_encontrado:
+    # #     return []
+
+    # # Encuentre todos los div con la clase CSS "vtex-search-result-3-x-galleryItem vtex-search-result-3-x-galleryItem--normal vtex-search-result-3-x-galleryItem--grid pa4"
+    libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.vtex-search-result-3-x-galleryItem vtex-search-result-3-x-galleryItem--normal vtex-search-result-3-x-galleryItem--grid pa4')
+    # libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
+    return libros_encontrados
+    # libros = []
+
+    # for libro in libros_encontrados:
+    #     libros.append(extraerDatosLibre(libro))
+    
+    # # Buscar los elementos span que tengan la clase "pagnLink"
+    # paginas = driver.find_elements(By.CSS_SELECTOR, 'span.pagnLink')
+    
+    # if len(paginas):
+    #     for i, p in enumerate(paginas):
+    #         titulo_modificado = titulo.replace(' ', '+').lower()
+    #         url = f"https://www.buscalibre.com.co/libros/search?q={titulo_modificado}&page={i + 2}"
+    #         driver.get(url)
+    #         time.sleep(2)
+
+    #         libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
+    #         for libro in libros_encontrados:
+    #             libros.append(extraerDatosLibre(libro))
+
+    # return libros
 
 def buscar_libre_libreria(driver, titulo):
     driver.get('https://www.buscalibre.com.co/')
@@ -56,7 +107,7 @@ def buscar_libre_libreria(driver, titulo):
     libros = []
 
     for libro in libros_encontrados:
-        libros.append(extraerDatosLibros(libro))
+        libros.append(extraerDatosLibre(libro))
     
     # Buscar los elementos span que tengan la clase "pagnLink"
     paginas = driver.find_elements(By.CSS_SELECTOR, 'span.pagnLink')
@@ -70,11 +121,11 @@ def buscar_libre_libreria(driver, titulo):
 
             libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
             for libro in libros_encontrados:
-                libros.append(extraerDatosLibros(libro))
+                libros.append(extraerDatosLibre(libro))
 
     return libros
 
-def extraerDatosLibros(libro):
+def extraerDatosLibre(libro):
     # Extraer el valor del atributo href de la primera etiqueta a
     url_libro = libro.find_element(By.TAG_NAME, 'a').get_attribute('href')
     # Extraer el valor del atributo "src" de la primera etiqueta img y clase " lazyloaded"
