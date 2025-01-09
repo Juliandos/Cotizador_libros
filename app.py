@@ -43,7 +43,7 @@ def buscar_libre_libreria(driver, titulo):
     input_busqueda.send_keys(titulo)
     input_busqueda.send_keys(Keys.ENTER)
 
-    time.sleep(4)
+    time.sleep(2)
 
     # Validar si el section con el ID "noEncontrado" existe
     # no_encontrado = driver.find_element(By.ID, 'noEncontrado')
@@ -66,7 +66,7 @@ def buscar_libre_libreria(driver, titulo):
             titulo_modificado = titulo.replace(' ', '+').lower()
             url = f"https://www.buscalibre.com.co/libros/search?q={titulo_modificado}&page={i + 2}"
             driver.get(url)
-            time.sleep(3)
+            time.sleep(2)
 
             libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
             for libro in libros_encontrados:
@@ -75,6 +75,8 @@ def buscar_libre_libreria(driver, titulo):
     return libros
 
 def extraerDatosLibros(libro):
+    # Extraer el valor del atributo href de la primera etiqueta a
+    url_libro = libro.find_element(By.TAG_NAME, 'a').get_attribute('href')
     # Extraer el valor del atributo "src" de la primera etiqueta img y clase " lazyloaded"
     img_url = libro.find_element(By.TAG_NAME, 'img').get_attribute('src')
     # Extraer el valor de este selector CSS "h3.nombre"
@@ -91,6 +93,7 @@ def extraerDatosLibros(libro):
 
 
     return{
+        'url_libro': url_libro,
         'img_url': img_url if img_url else 'https://statics.cdn1.buscalibre.com/no_image/ni9.__RS180x180__.jpg',
         'titulo': titulo_libro,
         'autor': autor_libro,
