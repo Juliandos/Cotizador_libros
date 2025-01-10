@@ -1,3 +1,4 @@
+import math
 import re
 import time
 from flask import Flask, jsonify, render_template, request
@@ -86,9 +87,9 @@ def buscar_libre_libreria(driver, titulo):
 
     # Encontrar el div con estas clases "cantidadProductos"
     cantidad_libros = driver.find_element(By.CSS_SELECTOR, 'div.cantidadProductos h2').text
-    # print("Cantidad de libros: ", cantidad_libros)
-    numero = int(re.search(r'\d+', cantidad_libros).group())
-    print("Cantidad de Libros: ", numero)
+    numero_paginas = int(re.search(r'\d+', cantidad_libros).group())/50
+    if numero_paginas > int(numero_paginas):
+        numero_paginas = math.ceil(numero_paginas)
 
     libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
 
@@ -97,20 +98,15 @@ def buscar_libre_libreria(driver, titulo):
     for libro in libros_encontrados:
         libros.append(extraerDatosLibre(libro))
     
-    # Buscar los elementos span que tengan la clase "pagnLink"
-    paginas = driver.find_elements(By.CSS_SELECTOR, 'span.pagnLink')
-    print("Páginas: ", len(paginas))
+    for i in range(0, numero_paginas - 1):
+        titulo_modificado = titulo.replace(' ', '+').lower()
+        url = f"https://www.buscalibre.com.co/libros/search?q={titulo_modificado}&page={i + 2}"
+        driver.get(url)
+        time.sleep(2)
 
-    if len(paginas):
-        for i, p in enumerate(paginas):
-            titulo_modificado = titulo.replace(' ', '+').lower()
-            url = f"https://www.buscalibre.com.co/libros/search?q={titulo_modificado}&page={i + 2}"
-            driver.get(url)
-            time.sleep(2)
-
-            libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
-            for libro in libros_encontrados:
-                libros.append(extraerDatosLibre(libro))
+        libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
+        for libro in libros_encontrados:
+            libros.append(extraerDatosLibre(libro))
 
     return libros
 
@@ -130,7 +126,6 @@ def extraerDatosLibre(libro):
         precio = libro.find_element(By.CSS_SELECTOR, 'p.precio-ahora.hide-on-hover.margin-0.font-size-medium').text
     except:
         precio = -1
-
 
     return{
         'url_libro': url_libro,
