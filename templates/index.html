@@ -26,19 +26,19 @@
           <li class="nav-item" role="presentation">
             <button class="nav-link active" id="tab1-tab" data-bs-toggle="tab" data-bs-target="#buscaLibre"
               type="button" role="tab" aria-controls="buscaLibre" aria-selected="true">
-              Pestaña 1
+              Libreria Libre
             </button>
           </li>
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab2-tab" data-bs-toggle="tab" data-bs-target="#buscaNacional" type="button" role="tab"
               aria-controls="buscaNacional" aria-selected="false">
-              Pestaña 2
+              Libreria Nacional
             </button>
           </li>
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#buscaLerner" type="button" role="tab"
               aria-controls="buscaLerner" aria-selected="false">
-              Pestaña 3
+              Librería Lerner
             </button>
           </li>
         </ul>
@@ -113,8 +113,6 @@
 
         // Petición realizada a Librería Lerner
         $.post("/buscarLerner", { title: query }, (response) => {
-          console.log(response);          
-          
           let librosBuscaLerner = response.buscaLerner;
           $("#divBuscaLerner").LoadingOverlay("hide");
 
@@ -151,6 +149,7 @@
       `;
       return tarjetaHtml;
     }
+    
   </script>
 </body>
 
