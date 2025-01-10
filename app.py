@@ -151,22 +151,16 @@ def buscar_lerner_libreria(driver, titulo):
                 # Encuentra múltiples elementos
                 elementos = driver.find_elements(By.CSS_SELECTOR, "section.vtex-product-summary-2-x-container.vtex-product-summary-2-x-containerNormal")
                 
-                print(f"Se encontraron {len(elementos)} elementos")
                 if elementos:
-                    
                     for idx, elemento in enumerate(elementos):
                         # Obtén el texto del elemento
                         texto = elemento.text
-                        print(f"Elemento {idx + 1}: {texto}")
                         
-                        # Opcional: Obtén atributos específicos (por ejemplo, un enlace)
                         enlace = elemento.find_element(By.CSS_SELECTOR, 'a').get_attribute('href') if elemento.find_elements(By.CSS_SELECTOR, 'a') else None
 
-                        # Obtener la imagen usando la función definida previamente
                         src_imagen = obtener_imagen(elemento)
                         
-                        # Opcional: Divide el texto en partes si sigue un patrón
-                        partes = texto.split('\n')  # Divide por líneas
+                        partes = texto.split('\n')
                         if len(partes) >= 3:
                             autor = partes[2]
                             precio = partes[0] 
