@@ -78,38 +78,38 @@
         $("#divBuscaNacional").LoadingOverlay("show");
         $("#divBuscaLerner").LoadingOverlay("show");
 
-        // // Petición realizada a Librería Libre
-        // $.post("/buscarLibre", { title: query }, (response) => {
-        //   let librosBuscaLibre = response.buscaLibre;
-        //   $("#divBuscaLibre").LoadingOverlay("hide");
+        // Petición realizada a Librería Libre
+        $.post("/buscarLibre", { title: query }, (response) => {
+          let librosBuscaLibre = response.buscaLibre;
+          $("#divBuscaLibre").LoadingOverlay("hide");
 
-        //   if (librosBuscaLibre.length > 0) {
-        //     for (const libro of librosBuscaLibre) {
-        //       const libroHtml = generarTarjetaLib(libro);
-        //       $("#divBuscaLibre").append(libroHtml);
-        //     }
-        //   }
-        // }).fail(function (error) {
-        //   console.error("Error en la petición:", error);
-        //   $("#divBuscaLibre").LoadingOverlay("hide");
-        // });
+          if (librosBuscaLibre.length > 0) {
+            for (const libro of librosBuscaLibre) {
+              const libroHtml = generarTarjetaLib(libro);
+              $("#divBuscaLibre").append(libroHtml);
+            }
+          }
+        }).fail(function (error) {
+          console.error("Error en la petición:", error);
+          $("#divBuscaLibre").LoadingOverlay("hide");
+        });
 
-        // // Petición realizada a Librería Nacional
-        // $.post("/buscarNacional", { title: query }, (response) => {
+        // Petición realizada a Librería Nacional
+        $.post("/buscarNacional", { title: query }, (response) => {
           
-        //   let librosBuscaNacional = response.buscaNacional;
-        //   $("#divBuscaNacional").LoadingOverlay("hide");
+          let librosBuscaNacional = response.buscaNacional;
+          $("#divBuscaNacional").LoadingOverlay("hide");
 
-        //   if (librosBuscaNacional.length > 0) {
-        //     for (const libro of librosBuscaNacional) {
-        //       const libroHtml = generarTarjetaLib(libro);
-        //       $("#divBuscaNacional").append(libroHtml);
-        //     }
-        //   }
-        // }).fail(function (error) {
-        //   console.error("Error en la petición:", error);
-        //   $("#divBuscaNacional").LoadingOverlay("hide");
-        // });
+          if (librosBuscaNacional.length > 0) {
+            for (const libro of librosBuscaNacional) {
+              const libroHtml = generarTarjetaLib(libro);
+              $("#divBuscaNacional").append(libroHtml);
+            }
+          }
+        }).fail(function (error) {
+          console.error("Error en la petición:", error);
+          $("#divBuscaNacional").LoadingOverlay("hide");
+        });
 
         // Petición realizada a Librería Lerner
         $.post("/buscarLerner", { title: query }, (response) => {
@@ -140,7 +140,7 @@
             <div class="card-body d-flex flex-column">
               <h5 class="card-title">${libro.titulo}</h5>
               <p class="card-text"><strong>Autor:</strong> ${libro.autor}</p>
-              <p class="card-text">${libro.otros_datos}</p>
+              ${libro.otros_datos ? `<p class="card-text">${libro.otros_datos}</p>` : ''}
               <p class="card-text text-success"><strong>Precio:</strong> ${libro.precio}</p>
               <div class="mt-auto">
                 <a href="${libro.url_libro}" target="_blank" class="btn btn-primary w-100">Comprar</a>

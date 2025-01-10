@@ -155,7 +155,7 @@ def buscar_lerner_libreria(driver, titulo):
                 if elementos:
                     
                     for idx, elemento in enumerate(elementos):
-                        time.sleep(1)
+                        # time.sleep(1)
                         # Obtén el texto del elemento
                         texto = elemento.text
                         print(f"Elemento {idx + 1}: {texto}")
@@ -171,18 +171,20 @@ def buscar_lerner_libreria(driver, titulo):
                         
                         # Opcional: Divide el texto en partes si sigue un patrón
                         partes = texto.split('\n')  # Divide por líneas
-                        if len(partes) >= 2:
+                        if len(partes) >= 3:
                             autor = partes[2]
+                            precio = partes[0] 
+                            titulo = partes[1]
                             if autor == 'Agotado':
-                                precio = autor 
-                                titulo = partes[0]
-                                autor = partes[1]
-                                libros.append({
-                                    'url_libro': enlace,
-                                    'img_url': src_imagen,
-                                    'titulo': titulo,
-                                    'autor': autor,
-                                    'precio': precio,
+                                precio = autor
+                                autor = partes[0]
+                            
+                            libros.append({
+                                'url_libro': enlace,
+                                'img_url': src_imagen,
+                                'titulo': titulo,
+                                'autor': autor,
+                                'precio': precio,
                                 })
                 else:
                     print("No se encontraron elementos.")
