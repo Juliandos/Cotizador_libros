@@ -1,3 +1,4 @@
+import re
 import time
 from flask import Flask, jsonify, render_template, request
 from selenium import webdriver
@@ -65,9 +66,7 @@ def buscar_nacional_libreria(driver, titulo):
             mostrar_mas.click()
             time.sleep(3)
         except:
-            time.sleep(1)
             libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'section.vtex-product-summary-2-x-container.vtex-product-summary-2-x-container--cardsLibros.vtex-product-summary-2-x-containerNormal.vtex-product-summary-2-x-containerNormal--cardsLibros.overflow-hidden.br3.h-100.w-100.flex.flex-column.justify-between.center.tc')
-            print("cantidad: ", len(libros_encontrados))
 
             for libro in libros_encontrados:
                 libros.append(extraerDatosNacional(libro))
@@ -85,12 +84,12 @@ def buscar_libre_libreria(driver, titulo):
 
     time.sleep(2)
 
-    # Validar si el section con el ID "noEncontrado" existe
-    # no_encontrado = driver.find_element(By.ID, 'noEncontrado')
-    # if no_encontrado:
-    #     return []
+    # Encontrar el div con estas clases "cantidadProductos"
+    cantidad_libros = driver.find_element(By.CSS_SELECTOR, 'div.cantidadProductos h2').text
+    # print("Cantidad de libros: ", cantidad_libros)
+    numero = int(re.search(r'\d+', cantidad_libros).group())
+    print("Cantidad de Libros: ", numero)
 
-    # Encuentre todos los div con la clase CSS "div.box-producto"
     libros_encontrados = driver.find_elements(By.CSS_SELECTOR, 'div.box-producto')
 
     libros = []
@@ -100,7 +99,8 @@ def buscar_libre_libreria(driver, titulo):
     
     # Buscar los elementos span que tengan la clase "pagnLink"
     paginas = driver.find_elements(By.CSS_SELECTOR, 'span.pagnLink')
-    
+    print("Páginas: ", len(paginas))
+
     if len(paginas):
         for i, p in enumerate(paginas):
             titulo_modificado = titulo.replace(' ', '+').lower()
