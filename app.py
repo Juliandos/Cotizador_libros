@@ -5,6 +5,8 @@ from flask import Flask, jsonify, render_template, request
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 app = Flask(__name__)
 
@@ -14,6 +16,7 @@ def index():
 
 # Ruta post pra generar una busqueda a partir de un titulo que se envia desde el cliente
 
+# Petición realizada a Librería Libre
 @app.route('/buscarLibre', methods=['POST'])
 def buscarLibre():
     title = request.form.get('title')
@@ -26,6 +29,7 @@ def buscarLibre():
     }
     return jsonify(datos)
 
+# Petición realizada a Librería Nacional
 @app.route('/buscarNacional', methods=['POST'])
 def buscarNacional():
     title = request.form.get('title')
@@ -35,6 +39,19 @@ def buscarNacional():
         'status': 'success',
         'titulo': title,
         'buscaNacional': buscar_nacional_libreria(driver, title)
+    }
+    return jsonify(datos)
+
+# Petición realizada a Librería Lerner
+@app.route('/buscarLerner', methods=['POST'])
+def buscarLerner():
+    title = request.form.get('title')
+
+    driver = crear_driver()
+    datos = {
+        'status': 'success',
+        'titulo': title,
+        'buscaLerner': buscar_lerner_libreria(driver, title)
     }
     return jsonify(datos)
 
@@ -110,6 +127,69 @@ def buscar_libre_libreria(driver, titulo):
 
     return libros
 
+def buscar_lerner_libreria(driver, titulo):
+    driver.get('https://www.librerialerner.com.co/')
+
+    # Encuentre el input con placeholder "Buscar libros"
+    input_busqueda = driver.find_element(By.CSS_SELECTOR, 'input[placeholder="Buscar libros"]')
+    input_busqueda.send_keys(titulo)
+    input_busqueda.send_keys(Keys.ENTER)
+
+    time.sleep(10)
+
+    libros = []
+    # Ciclo while para verificar continuamente la presencia del botón Mostrar Más
+    while True:
+        try:
+            mostrar_mas = WebDriverWait(driver, 20).until(
+                EC.element_to_be_clickable((By.LINK_TEXT, "Mostrar más"))
+            )
+            mostrar_mas.click()
+        except:
+            time.sleep(10)
+            try:
+                # Encuentra múltiples elementos
+                elementos = driver.find_elements(By.CSS_SELECTOR, "section.vtex-product-summary-2-x-container.vtex-product-summary-2-x-containerNormal")
+                
+                print(f"Se encontraron {len(elementos)} elementos")
+                if elementos:
+                    
+                    for idx, elemento in enumerate(elementos):
+                        time.sleep(1)
+                        # Obtén el texto del elemento
+                        texto = elemento.text
+                        print(f"Elemento {idx + 1}: {texto}")
+                        
+                        # Opcional: Obtén atributos específicos (por ejemplo, un enlace)
+                        enlace = elemento.find_element(By.CSS_SELECTOR, 'a').get_attribute('href') if elemento.find_elements(By.CSS_SELECTOR, 'a') else None
+                        print(f"Enlace asociado (si lo hay): {enlace}")
+
+                        # Obtener la imagen usando la función definida previamente
+                        src_imagen = obtener_imagen(elemento)
+                        if src_imagen:
+                            print(f"Imagen URL: {src_imagen}")
+                        
+                        # Opcional: Divide el texto en partes si sigue un patrón
+                        partes = texto.split('\n')  # Divide por líneas
+                        if len(partes) >= 2:
+                            autor = partes[2]
+                            if autor == 'Agotado':
+                                precio = autor 
+                                titulo = partes[0]
+                                autor = partes[1]
+                                libros.append({
+                                    'url_libro': enlace,
+                                    'img_url': src_imagen,
+                                    'titulo': titulo,
+                                    'autor': autor,
+                                    'precio': precio,
+                                })
+                else:
+                    print("No se encontraron elementos.")
+            except Exception as e:
+                print("Error al procesar los elementos:", e)
+            return libros
+
 def extraerDatosLibre(libro):
     # Extraer el valor del atributo href de la primera etiqueta a
     url_libro = libro.find_element(By.TAG_NAME, 'a').get_attribute('href')
@@ -169,3 +249,84 @@ def extraerDatosNacional(libro):
         'autor': autor_libro,
         'precio': precio,
     }
+
+def extraerDatosLerner(libro):
+    try:
+        url_libro = libro.find_element(By.TAG_NAME, 'a').get_attribute('href')
+    except:
+        url_libro = "URL no disponible"
+
+    try:
+        img_url = libro.find_element(By.TAG_NAME, 'img').get_attribute('src')
+    except:
+        img_url = "https://statics.cdn1.buscalibre.com/no_image/ni9.__RS180x180__.jpg"
+
+    try:
+        titulo_libro = libro.find_element(By.CSS_SELECTOR, 'h3.vtex-product-summary-2-x-productNameContainer span').text
+    except:
+        titulo_libro = "Título no disponible"
+
+    # try:
+    #     # Extraer el autor del libro
+    #     autor_libro = libro.find_element(By.CSS_SELECTOR, 'span.vtex-product-specification-badges-0-x-badgeText').text
+    # except:
+    #     autor_libro = "Autor no disponible"
+
+    # try:
+    #     # Extraer el precio del libro
+    #     precio = libro.find_element(By.CSS_SELECTOR, 'span.vtex-product-price-1-x-sellingPrice').text
+    # except:
+    #     precio = "Precio no disponible"
+
+    # Retornar los datos como un diccionario
+    return {
+        'url_libro': url_libro,
+        'img_url': img_url,
+        'titulo': titulo_libro,
+        # 'autor': autor_libro,
+        # 'precio': precio,
+    }
+
+    # Extraer el valor del atributo href de la primera etiqueta a
+    # url_libro = libro.get_attribute('outerHTML')
+    # Extraer el valor del atributo "src" de la primera etiqueta img y clase " lazyloaded"
+    # img_url = libro.find_element(By.TAG_NAME, 'img').get_attribute('src')
+    # # Extraer el valor de este selector CSS "h3.nombre"
+    # titulo_libro = libro.find_element(By.CSS_SELECTOR, "h3.vtex-product-summary-2-x-productNameContainer span.vtex-product-summary-2-x-productBrand").text
+    # # Extraer el valor de este selector "div.autor"
+    # autor_libro = libro.find_element(By.CSS_SELECTOR, 'span.vtex-product-specification-badges-0-x-badgeText.vtex-product-specification-badges-0-x-badgeText--autorCardLibros').text
+    # # Extraer el valor del elemento p con clases "precio-ahora hide-on-hover margin-0 font-size-medium"
+    # try:
+    #     # Encuentra los elementos que componen el precio
+    #     currency_code = libro.find_element(By.CSS_SELECTOR, "span.vtex-product-price-1-x-currencyCode").text
+    #     currency_integer = libro.find_element(By.CSS_SELECTOR, "span.vtex-product-price-1-x-currencyInteger").text
+    #     currency_group = libro.find_element(By.CSS_SELECTOR, "span.vtex-product-price-1-x-currencyGroup").text
+    #     currency_literal = libro.find_element(By.CSS_SELECTOR, "span.vtex-product-price-1-x-currencyLiteral").text
+
+    #     # Verificar si el espacio está vacío y reemplazarlo por "00"
+    #     if currency_literal.strip() == "":
+    #         currency_literal = "00"
+    #     # Componer el precio completo
+    #     precio = f"{currency_code}{currency_integer}{currency_group}{currency_literal}"
+    # except:
+    #     precio = -1
+
+
+    # return {
+    #     'url_libro': "url_libro",
+    #     # 'img_url': img_url if img_url else 'https://statics.cdn1.buscalibre.com/no_image/ni9.__RS180x180__.jpg',
+    #     # 'titulo': titulo_libro,
+    #     # 'autor': autor_libro,
+    #     # 'precio': precio,
+    # }
+
+def obtener_imagen(elemento):
+    try:
+        # Encuentra la imagen dentro del elemento
+        imagen = elemento.find_element(By.CSS_SELECTOR, 'img.vtex-product-summary-2-x-imageNormal')
+        # Obtener la URL de la imagen
+        src_imagen = imagen.get_attribute('src')
+        return src_imagen
+    except Exception as e:
+        print(f"Error al obtener la imagen: {e}")
+        return None

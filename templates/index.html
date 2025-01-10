@@ -36,8 +36,8 @@
             </button>
           </li>
           <li class="nav-item" role="presentation">
-            <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#tab3" type="button" role="tab"
-              aria-controls="tab3" aria-selected="false">
+            <button class="nav-link" id="tab3-tab" data-bs-toggle="tab" data-bs-target="#buscaLerner" type="button" role="tab"
+              aria-controls="buscaLerner" aria-selected="false">
               Pestaña 3
             </button>
           </li>
@@ -54,35 +54,8 @@
             </div>
           </div>
           <!-- Pestaña 3 -->
-          <div class="tab-pane fade" id="tab3" role="tabpanel" aria-labelledby="tab3-tab">
-            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" style="height: 300px">
-              <div class="col">
-                <div class="card">
-                  <img src="https://via.placeholder.com/150" class="card-img-top" alt="..." />
-                  <div class="card-body">
-                    <h5 class="card-title">Tarjeta 7</h5>
-                    <p class="card-text">Contenido de la tarjeta 7.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card">
-                  <img src="https://via.placeholder.com/150" class="card-img-top" alt="..." />
-                  <div class="card-body">
-                    <h5 class="card-title">Tarjeta 8</h5>
-                    <p class="card-text">Contenido de la tarjeta 8.</p>
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-                <div class="card">
-                  <img src="https://via.placeholder.com/150" class="card-img-top" alt="..." />
-                  <div class="card-body">
-                    <h5 class="card-title">Tarjeta 9</h5>
-                    <p class="card-text">Contenido de la tarjeta 9.</p>
-                  </div>
-                </div>
-              </div>
+          <div class="tab-pane fade" role="tabpanel" aria-labelledby="tab3-tab" id="buscaLerner">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3" id="divBuscaLerner" style="height: 300px">
             </div>
           </div>
         </div>
@@ -103,40 +76,60 @@
 
         $("#divBuscaLibre").LoadingOverlay("show");
         $("#divBuscaNacional").LoadingOverlay("show");
+        $("#divBuscaLerner").LoadingOverlay("show");
 
-        // Petición realizada a Librería Libre
-        $.post("/buscarLibre", { title: query }, (response) => {
-          let librosBuscaLibre = response.buscaLibre;
-          $("#divBuscaLibre").LoadingOverlay("hide");
+        // // Petición realizada a Librería Libre
+        // $.post("/buscarLibre", { title: query }, (response) => {
+        //   let librosBuscaLibre = response.buscaLibre;
+        //   $("#divBuscaLibre").LoadingOverlay("hide");
 
-          if (librosBuscaLibre.length > 0) {
-            for (const libro of librosBuscaLibre) {
-              const libroHtml = generarTarjetaLib(libro);
-              $("#divBuscaLibre").append(libroHtml);
-            }
-          }
-        }).fail(function (error) {
-          console.error("Error en la petición:", error);
-          $("#divBuscaLibre").LoadingOverlay("hide");
-        });
+        //   if (librosBuscaLibre.length > 0) {
+        //     for (const libro of librosBuscaLibre) {
+        //       const libroHtml = generarTarjetaLib(libro);
+        //       $("#divBuscaLibre").append(libroHtml);
+        //     }
+        //   }
+        // }).fail(function (error) {
+        //   console.error("Error en la petición:", error);
+        //   $("#divBuscaLibre").LoadingOverlay("hide");
+        // });
 
-        // Petición realizada a Librería Nacional
-        $.post("/buscarNacional", { title: query }, (response) => {
+        // // Petición realizada a Librería Nacional
+        // $.post("/buscarNacional", { title: query }, (response) => {
           
-          let librosBuscaNacional = response.buscaNacional;
-          $("#divBuscaNacional").LoadingOverlay("hide");
+        //   let librosBuscaNacional = response.buscaNacional;
+        //   $("#divBuscaNacional").LoadingOverlay("hide");
 
-          if (librosBuscaNacional.length > 0) {
-            for (const libro of librosBuscaNacional) {
+        //   if (librosBuscaNacional.length > 0) {
+        //     for (const libro of librosBuscaNacional) {
+        //       const libroHtml = generarTarjetaLib(libro);
+        //       $("#divBuscaNacional").append(libroHtml);
+        //     }
+        //   }
+        // }).fail(function (error) {
+        //   console.error("Error en la petición:", error);
+        //   $("#divBuscaNacional").LoadingOverlay("hide");
+        // });
+
+        // Petición realizada a Librería Lerner
+        $.post("/buscarLerner", { title: query }, (response) => {
+          console.log(response);          
+          
+          let librosBuscaLerner = response.buscaLerner;
+          $("#divBuscaLerner").LoadingOverlay("hide");
+
+          if (librosBuscaLerner.length > 0) {
+            for (const libro of librosBuscaLerner) {
               const libroHtml = generarTarjetaLib(libro);
-              $("#divBuscaNacional").append(libroHtml);
+              $("#divBuscaLerner").append(libroHtml);
             }
           }
         }).fail(function (error) {
           console.error("Error en la petición:", error);
-          $("#divBuscaLibre").LoadingOverlay("hide");
+          $("#divBuscaLerner").LoadingOverlay("hide");
         });
       });
+      
     });
 
     function generarTarjetaLib(libro) {
