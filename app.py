@@ -155,19 +155,15 @@ def buscar_lerner_libreria(driver, titulo):
                 if elementos:
                     
                     for idx, elemento in enumerate(elementos):
-                        # time.sleep(1)
                         # Obtén el texto del elemento
                         texto = elemento.text
                         print(f"Elemento {idx + 1}: {texto}")
                         
                         # Opcional: Obtén atributos específicos (por ejemplo, un enlace)
                         enlace = elemento.find_element(By.CSS_SELECTOR, 'a').get_attribute('href') if elemento.find_elements(By.CSS_SELECTOR, 'a') else None
-                        print(f"Enlace asociado (si lo hay): {enlace}")
 
                         # Obtener la imagen usando la función definida previamente
                         src_imagen = obtener_imagen(elemento)
-                        if src_imagen:
-                            print(f"Imagen URL: {src_imagen}")
                         
                         # Opcional: Divide el texto en partes si sigue un patrón
                         partes = texto.split('\n')  # Divide por líneas
