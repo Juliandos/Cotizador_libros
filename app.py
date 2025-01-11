@@ -76,7 +76,6 @@ def buscar_nacional_libreria(driver, titulo):
     time.sleep(3)
     
     libros = []
-    # Ciclo while para verificar continuamente la presencia del botón
     while True:
         try:
             # Intentar encontrar el botón 'Mostrar más'
@@ -90,6 +89,7 @@ def buscar_nacional_libreria(driver, titulo):
                 libros.append(extraerDatosNacional(libro))
             break 
 
+    driver.close()
     return libros
 
 def buscar_libre_libreria(driver, titulo):
@@ -125,6 +125,7 @@ def buscar_libre_libreria(driver, titulo):
         for libro in libros_encontrados:
             libros.append(extraerDatosLibre(libro))
 
+    driver.close()
     return libros
 
 def buscar_lerner_libreria(driver, titulo):
@@ -180,6 +181,7 @@ def buscar_lerner_libreria(driver, titulo):
                     print("No se encontraron elementos.")
             except Exception as e:
                 print("Error al procesar los elementos:", e)
+            driver.close()
             return libros
 
 def extraerDatosLibre(libro):
